@@ -1,0 +1,12 @@
+{
+    "watch": [
+        "./",
+        ".env"
+    ],
+    "ignore": [
+        "node_modules",
+        ".git"
+    ],
+    "ext": "js,ts,json",
+    "exec": "ts-node -r tsconfig-paths/register --transpile-only index.ts"
+}
