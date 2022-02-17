@@ -55,14 +55,10 @@ class App {
 
     //initialize telegram webhook url
     private async initializeTelegramWebhook() {
-
-
-
-        bot.start((ctx) => ctx.reply(`
-            Hello ${ctx.message.from.first_name}! I will help you transform your data in spreadsheet (excel document) into a JSON payload document`
-        ));
-        bot.on('document', bot.readDocument)
-
+        bot.start((ctx) => ctx.reply(`Hello ${ctx.message.from.first_name}! Upload your spreadsheet (microsoft excel) file let me generate the corresponding JSON file data from it. You can start by typing the command "/upload" to see a sample of excel file format you would be uploading. Then type "/generated" to see the generated JSON sample file`));
+        bot.on('document', bot.readDocument);
+        bot.command('upload', bot.uploadSample);
+        bot.command('generated', bot.generatedSample);
 
         bot.launch()
     }
@@ -73,9 +69,9 @@ class App {
         const options = {
             swaggerDefinition: {
                 info: {
-                    title: 'JSON PAYLOAD GENERATOR SERVICE',
+                    title: 'SPREADSHEET TO JSON',
                     version: '2.0.0',
-                    description: 'Generates a JSON payload data from uploaded file (spreadsheet) data',
+                    description: 'Generates a JSON data from uploaded spreadsheet (excel) file',
                 },
                 host: configs.connection.host,
                 basePath: '/api',

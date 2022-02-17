@@ -55,6 +55,18 @@ class TelegramBot extends Telegraf {
         fs.unlinkSync(payloadPath);
 
     }
+
+    public uploadSample = (ctx) => {
+        const filepath = path.join(__dirname, `../sample/sample-upload.xlsx`);
+        return ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
+    }
+
+    public generatedSample = (ctx) => {
+        const filepath = path.join(__dirname, `../sample/generated-json.json`);
+        return ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
+    }
+
+
 }
 
 
