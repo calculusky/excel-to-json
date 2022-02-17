@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import ExcelController from '../controllers/excel.controller';
+import ExcelController from '../controllers/excel';
 import uploader from '../libs/multer';
 import config from '../config/config';
 

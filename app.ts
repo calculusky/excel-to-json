@@ -6,7 +6,7 @@ import fs from 'fs';
 import configs from './config/config';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import errorMiddleware from './middlewares/error.middleware';
+import errorMiddleware from './middlewares/error';
 import bot from './libs/bot'
 
 
@@ -46,7 +46,8 @@ class App {
     private initializeRoutes() {
         const routePath = './routes';
         fs.readdirSync(routePath).forEach(route => {
-            const ControllerRoute = require(`${routePath}/${route}`);
+            const theRoute = route.split('.')[0];
+            const ControllerRoute = require(`${routePath}/${theRoute}`);
             const ctrlRoute = new ControllerRoute();
             this.app.use('/api', ctrlRoute.router)
         })
