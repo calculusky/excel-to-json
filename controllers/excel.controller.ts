@@ -1,39 +1,30 @@
 import { Request, Response, NextFunction } from 'express';
-import readXlsxFile from 'read-excel-file/node';
+import fs from 'fs';
 import path from 'path';
+import { getFileData } from '../libs/fileReader';
 
 class ExcelController {
 
-    public readExcel = async (req: Request, res: Response, next: NextFunction) => {
+    public processFile = async (req: Request, res: Response, next: NextFunction) => {
+
+
+        if (!req.file) return res.status(400).json({ message: 'Invalid file' })
 
         try {
-            const filepath = path.join(__dirname, '../files/Book.xlsx');
+            const filepath = path.join(__dirname, `../downloads/${req.file.filename}`);
 
+            const data = await getFileData(filepath);
 
-            const rows = await readXlsxFile(filepath);
-            const [firstRow, ...rest] = rows;
-
-
-            const data = rest.map((dev) => {
-                return dev.reduce((acc, val, idx) => {
-                    const key: any = firstRow[idx];
-                    return {
-                        ...acc,
-                        [key]: val
-                    }
-                }, {})
-
-            })
-
-
-            res.json({
-                data
-            })
+            // delete the file
+            fs.unlinkSync(filepath)
+            res.json({ data })
 
         } catch (error) {
             next(error)
         }
     }
+
+
 }
 
 export default ExcelController

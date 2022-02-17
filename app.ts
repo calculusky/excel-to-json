@@ -1,12 +1,14 @@
-
+import { config } from 'dotenv';
+config();
 import express from 'express';
 import cors from 'cors';
 import fs from 'fs';
-import config from './config/config';
+import configs from './config/config';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import errorMiddleware from './middlewares/error.middleware';
-// import ControllerRoute from './routes/excel.route';
+import bot from './libs/bot'
+
 
 
 class App {
@@ -29,9 +31,10 @@ class App {
     }
 
     public listen() {
-        this.app.listen(config.connection.port, () => {
+        this.app.listen(configs.connection.port, () => {
             //if (err) console.log(err)
-            console.log(`> Ready on ${config.connection.port}`);
+            console.log(`> Ready on ${configs.connection.port}`);
+            this.initializeTelegramWebhook()
         })
     }
 
@@ -50,23 +53,39 @@ class App {
 
     }
 
+    //initialize telegram webhook url
+    private async initializeTelegramWebhook() {
+
+
+
+        bot.start((ctx) => ctx.reply(`
+            Hello ${ctx.message.from.first_name}! I will help you transform your data in spreadsheet (excel document) into a JSON payload document`
+        ));
+        bot.on('document', bot.readDocument)
+
+
+        bot.launch()
+    }
+
+
     //initialize swagger
     initializeSwagger() {
         const options = {
             swaggerDefinition: {
                 info: {
-                    title: 'EXCEL SERVICE API',
-                    version: '1.0.0',
-                    description: 'Documentation for excel service API ',
+                    title: 'JSON PAYLOAD GENERATOR SERVICE',
+                    version: '2.0.0',
+                    description: 'Generates a JSON payload data from uploaded file (spreadsheet) data',
                 },
-                host: config.connection.host,
+                host: configs.connection.host,
+                basePath: '/api',
                 swagger: '2.0'
             },
             apis: ['swagger.yaml'],
         };
 
         const specs = swaggerJSDoc(options);
-        this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+        this.app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
     }
 
     //error handling

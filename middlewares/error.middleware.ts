@@ -10,7 +10,7 @@ const errorMiddleware = (error: HttpException, req: Request, res: Response, next
             });
         }
 
-        console.log(error, '*****')
+        console.log(error.message, '*****')
 
         if (!error.status) {
             error.message = 'Internal server error';

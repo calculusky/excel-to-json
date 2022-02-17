@@ -1,0 +1,26 @@
+tags:
+  - name: file
+    description: File API
+
+paths:
+  # [POST] file
+  /read-file:
+    post:
+      tags:
+        - file
+      summary: Read uploaded file
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: uploadFile
+          type: file
+          description: Upload file to be read eg spreadsheet
+          required: true
+      responses:
+        200:
+          description: "analyzed file data"
+        400:
+          description: "Bad Request"
+        500:
+          description: "Server Error"
