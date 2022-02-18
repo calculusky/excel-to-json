@@ -20,6 +20,7 @@ class App {
         this.initializeMiddlewares();
         this.initializeRoutes();
         this.initializeSwagger();
+        this.initializeTelegramBot();
         this.initializeErrorHandling();
     }
 
@@ -34,7 +35,6 @@ class App {
         this.app.listen(configs.connection.port, () => {
             //if (err) console.log(err)
             console.log(`> Ready on ${configs.connection.port}`);
-            this.initializeTelegramWebhook()
         })
     }
 
@@ -55,12 +55,11 @@ class App {
     }
 
     //initialize telegram webhook url
-    private async initializeTelegramWebhook() {
+    private async initializeTelegramBot() {
         bot.start((ctx) => ctx.reply(`Hello ${ctx.message.from.first_name}! Upload your spreadsheet (microsoft excel) file let me generate the corresponding JSON file data from it. You can start by typing the command "/upload" to see a sample of excel file format you would be uploading. Then type "/generated" to see the generated JSON sample file`));
         bot.on('document', bot.readDocument);
         bot.command('upload', bot.uploadSample);
         bot.command('generated', bot.generatedSample);
-
         bot.launch()
     }
 
