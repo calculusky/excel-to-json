@@ -10,12 +10,14 @@ const errorMiddleware = (error: HttpException, req: Request, res: Response, next
             });
         }
 
-        console.log(error.message, '*****')
 
         if (!error.status) {
             error.message = 'Internal server error';
             error.status = 500
         }
+
+        console.log(error, '*****')
+
         const status = error.status;
         const message = error.message;
         return res.status(status).json({ message })
