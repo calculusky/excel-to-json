@@ -25,9 +25,6 @@
     "resolveJsonModule": true,
     "importHelpers": true,
   },
-  "include": [
-    "**/*"
-  ],
   "exclude": [
     "node_modules",
     "dist"

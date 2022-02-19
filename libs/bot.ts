@@ -76,7 +76,7 @@ class TelegramBot extends Telegraf {
 
             const pat = await ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
 
-            console.log(pat, '----------------')
+            console.log(filepath, '----------------')
 
         } catch (error) {
             return ctx.reply('Sorry, unable to send file')
