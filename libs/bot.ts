@@ -4,7 +4,7 @@ import Downloader from 'nodejs-file-downloader';
 import { getFileData } from "./fileReader";
 import path from "path";
 import fs from 'fs';
-import { nextTick } from "process";
+
 
 
 
@@ -34,7 +34,7 @@ class TelegramBot extends Telegraf {
             //download the file
             const downloader = new Downloader({
                 url: fileUrl.href,
-                directory: "./downloads"
+                directory: path.join(__dirname, '../downloads')
             })
             await downloader.download()
 
@@ -49,10 +49,13 @@ class TelegramBot extends Telegraf {
 
             //save the json file to contain the payload to be returned
             const originalFileName = fileInfo.file_name.split('.')[0].toLowerCase();
+
+            //set up dir for upload
+            const uploadDir = path.join(__dirname, `../uploads`);
+            if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir)
+
             const payloadPath = path.join(__dirname, `../uploads/${originalFileName}.json`)
             fs.writeFileSync(payloadPath, JSON.stringify(data, null, 2))
-
-
             await ctx.telegram.sendDocument(ctx.chat.id, { source: payloadPath })
             fs.unlinkSync(payloadPath);
 
@@ -76,7 +79,7 @@ class TelegramBot extends Telegraf {
 
             const pat = await ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
 
-            console.log(filepath, '----------------')
+
 
         } catch (error) {
             return ctx.reply('Sorry, unable to send file')
