@@ -76,7 +76,7 @@ class App {
                     version: '2.0.0',
                     description: 'Generates a JSON data from uploaded spreadsheet (excel) file',
                 },
-                host: configs.connection.host,
+                // host: configs.connection.host,
                 basePath: '/api',
                 swagger: '2.0'
             },
