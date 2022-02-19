@@ -10,7 +10,6 @@ import errorMiddleware from './middlewares/error';
 import bot from './libs/bot'
 
 
-
 class App {
     public app: express.Application
     constructor() {
@@ -55,10 +54,11 @@ class App {
     //initialize telegram webhook url
     private async initializeTelegramBot() {
         try {
-            bot.start(async (ctx) => await ctx.reply(`Hello ${ctx.message.from.first_name}! Upload your spreadsheet (microsoft excel) file let me generate the corresponding JSON file data from it. You can start by typing the command "/upload" to see a sample of excel file format you would be uploading. Then type "/generated" to see the generated JSON sample file`));
+            bot.start(async (ctx) => await ctx.reply(`Hello ${ctx.message.from.first_name}! Upload your spreadsheet (microsoft excel) file let me generate the corresponding JSON file data from it. You can start by sending the command "/upload" to see a sample of excel file format you would be uploading. Then send "/generated" to see the generated JSON sample file. You can alternatively use the API docs endpoint by sending the command "/link"`));
             bot.on('document', bot.readDocument);
             bot.command('upload', bot.uploadSample);
             bot.command('generated', bot.generatedSample);
+            bot.command('link', bot.getAPILink);
             await bot.launch()
 
         } catch (error) {

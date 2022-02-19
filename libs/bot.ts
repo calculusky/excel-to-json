@@ -4,12 +4,6 @@ import Downloader from 'nodejs-file-downloader';
 import { getFileData } from "./fileReader";
 import path from "path";
 import fs from 'fs';
-
-
-
-
-
-
 class TelegramBot extends Telegraf {
     constructor(token: string) {
         super(token)
@@ -101,6 +95,10 @@ class TelegramBot extends Telegraf {
             console.log(error)
             return ctx.reply('Sorry, unable to send file')
         }
+    }
+
+    public getAPILink = async (ctx: Context) => {
+        return await ctx.telegram.sendMessage(ctx.chat.id, `${config.connection.host}/api/api-docs`)
     }
 
 
