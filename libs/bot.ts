@@ -15,6 +15,20 @@ class TelegramBot extends Telegraf {
         super(token)
     }
 
+    private samplePath = path.join(__dirname, '../sample');
+    private downloader = async (fileUrl: string, dirPath: string) => {
+        //download the file
+        const downloader = new Downloader({
+            url: fileUrl,
+            directory: dirPath
+        })
+        return await downloader.download()
+    }
+
+    private mimeTypes = {
+        excel: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    }
+
 
     public readDocument = async (ctx) => {
         try {
@@ -22,21 +36,13 @@ class TelegramBot extends Telegraf {
 
             const fileUrl = await ctx.telegram.getFileLink(fileInfo.file_id);
 
-
             //is the file mime-type acceptable?
-            if (!(fileInfo.mime_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                //|| file.mimetype == 'image.jpg'
-            )) {
+            if (!(fileInfo.mime_type == this.mimeTypes.excel)) {
                 return ctx.reply('Please try uploading a spreadsheet file');
             }
 
-
             //download the file
-            const downloader = new Downloader({
-                url: fileUrl.href,
-                directory: path.join(__dirname, '../downloads')
-            })
-            await downloader.download()
+            await this.downloader(fileUrl.href, path.join(__dirname, '../downloads'));
 
 
             //read the downloaded file and analyse the data
@@ -64,24 +70,35 @@ class TelegramBot extends Telegraf {
         }
     }
 
-    public uploadSample = async (ctx) => {
+
+
+    public uploadSample = async (ctx: Context) => {
+        const sampleExcelUrl = 'https://storage.googleapis.com/nedu_bucket/excel_to_json/sample-upload.xlsx';
         try {
-            const filepath = path.join(__dirname, `../sample/sample-upload.xlsx`);
-            await ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
+            await this.downloader(sampleExcelUrl, this.samplePath);
+            const sampleExcel = path.join(__dirname, '../sample/sample-upload.xlsx');
+            await ctx.telegram.sendChatAction(ctx.chat.id, 'upload_document');
+            await ctx.telegram.sendDocument(ctx.chat.id, { source: sampleExcel })
+            if (fs.existsSync(sampleExcel)) fs.unlinkSync(sampleExcel);
         } catch (error) {
             return ctx.reply('Sorry, unable to send file')
         }
     }
 
-    public generatedSample = async (ctx) => {
+
+
+    public generatedSample = async (ctx: Context) => {
+        const sampleJsonUrl = 'https://storage.googleapis.com/nedu_bucket/excel_to_json/generated-json.json';
+
         try {
-            const filepath = path.join(__dirname, `../sample/generated-json.json`);
-
-            const pat = await ctx.telegram.sendDocument(ctx.chat.id, { source: filepath })
-
-
+            await this.downloader(sampleJsonUrl, this.samplePath);
+            const sampleJson = path.join(__dirname, '../sample/generated-json.json');
+            await ctx.telegram.sendChatAction(ctx.chat.id, 'upload_document');
+            await ctx.telegram.sendDocument(ctx.chat.id, { source: sampleJson });
+            if (fs.existsSync(sampleJson)) fs.unlinkSync(sampleJson);
 
         } catch (error) {
+            console.log(error)
             return ctx.reply('Sorry, unable to send file')
         }
     }

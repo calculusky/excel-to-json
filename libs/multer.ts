@@ -1,13 +1,17 @@
+import fs from 'fs';
 import multer from 'multer';
+import path from 'path';
 
 
 
 const uploader = () => {
-    const uploadPath = 'downloads/'
+
+    const downloadPath = path.join(__dirname, '../downloads');
+    if (!fs.existsSync(downloadPath)) fs.mkdirSync(downloadPath);
 
     const storage = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, uploadPath)
+            cb(null, downloadPath)
         },
         filename: (req, file, cb) => {
             if (file.mimetype == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
